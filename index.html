@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TodoMaster - 待办事项管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div id="app" class="py-8 px-4">
+        <div class="max-w-2xl mx-auto">
+            <!-- 标题 -->
+            <div class="text-center mb-8">
+                <h1 class="text-5xl font-bold text-gray-800 mb-2">TodoMaster</h1>
+                <p class="text-gray-600">简洁高效的待办事项管理</p>
+            </div>
+
+            <!-- 输入框 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex gap-2">
+                    <input
+                        type="text"
+                        id="newTodo"
+                        placeholder="添加新任务..."
+                        class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    <button
+                        onclick="addTodo()"
+                        class="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                    >
+                        添加
+                    </button>
+                </div>
+            </div>
+
+            <!-- 过滤器 -->
+            <div class="bg-white rounded-lg shadow-lg p-4 mb-6">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                    <div class="flex gap-2">
+                        <button
+                            onclick="setFilter('all')"
+                            id="filter-all"
+                            class="px-4 py-2 rounded-lg font-medium transition-colors bg-blue-500 text-white"
+                        >
+                            全部 (<span id="count-all">0</span>)
+                        </button>
+                        <button
+                            onclick="setFilter('active')"
+                            id="filter-active"
+                            class="px-4 py-2 rounded-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        >
+                            进行中 (<span id="count-active">0</span>)
+                        </button>
+                        <button
+                            onclick="setFilter('completed')"
+                            id="filter-completed"
+                            class="px-4 py-2 rounded-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200"
+                        >
+                            已完成 (<span id="count-completed">0</span>)
+                        </button>
+                    </div>
+                    <button
+                        onclick="clearCompleted()"
+                        id="clear-btn"
+                        class="px-4 py-2 text-red-500 hover:text-red-600 font-medium"
+                        style="display: none;"
+                    >
+                        清除已完成
+                    </button>
+                </div>
+            </div>
+
+            <!-- 任务列表 -->
+            <div id="todoList" class="space-y-3"></div>
+
+            <!-- 统计信息 -->
+            <div id="stats" class="mt-6 text-center text-gray-600" style="display: none;"></div>
+
+            <!-- 页脚 -->
+            <div class="mt-12 text-center text-gray-500 text-sm">
+                <p>由软件开发团队模板创建 | 2026</p>
+                <p class="mt-1">数据保存在本地浏览器中</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let todos = [];
+        let currentFilter = 'all';
+
+        // 从localStorage加载数据
+        function loadTodos() {
+            const saved = localStorage.getItem('todos');
+            if (saved) {
+                todos = JSON.parse(saved);
+            }
+            render();
+        }
+
+        // 保存到localStorage
+        function saveTodos() {
+            localStorage.setItem('todos', JSON.stringify(todos));
+        }
+
+        // 添加任务
+        function addTodo() {
+            const input = document.getElementById('newTodo');
+            const title = input.value.trim();
+            
+            if (title) {
+                const todo = {
+                    id: Date.now().toString(),
+                    title: title,
+                    completed: false,
+                    createdAt: new Date().toISOString()
+                };
+                todos.unshift(todo);
+                input.value = '';
+                saveTodos();
+                render();
+            }
+        }
+
+        // 切换任务状态
+        function toggleTodo(id) {
+            todos = todos.map(todo =>
+                todo.id === id ? { ...todo, completed: !todo.completed } : todo
+            );
+            saveTodos();
+            render();
+        }
+
+        // 删除任务
+        function deleteTodo(id) {
+            todos = todos.filter(todo => todo.id !== id);
+            saveTodos();
+            render();
+        }
+
+        // 清除已完成
+        function clearCompleted() {
+            todos = todos.filter(todo => !todo.completed);
+            saveTodos();
+            render();
+        }
+
+        // 设置过滤器
+        function setFilter(filter) {
+            currentFilter = filter;
+            render();
+        }
+
+        // 渲染界面
+        function render() {
+            const filteredTodos = todos.filter(todo => {
+                if (currentFilter === 'active') return !todo.completed;
+                if (currentFilter === 'completed') return todo.completed;
+                return true;
+            });
+
+            const activeCount = todos.filter(todo => !todo.completed).length;
+            const completedCount = todos.length - activeCount;
+
+            // 更新计数
+            document.getElementById('count-all').textContent = todos.length;
+            document.getElementById('count-active').textContent = activeCount;
+            document.getElementById('count-completed').textContent = completedCount;
+
+            // 更新过滤按钮样式
+            ['all', 'active', 'completed'].forEach(filter => {
+                const btn = document.getElementById(`filter-${filter}`);
+                if (filter === currentFilter) {
+                    btn.className = 'px-4 py-2 rounded-lg font-medium transition-colors bg-blue-500 text-white';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-lg font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200';
+                }
+            });
+
+            // 显示/隐藏清除按钮
+            document.getElementById('clear-btn').style.display = completedCount > 0 ? 'block' : 'none';
+
+            // 渲染任务列表
+            const listEl = document.getElementById('todoList');
+            
+            if (filteredTodos.length === 0) {
+                let emptyText = '还没有任务，添加一个开始吧！';
+                if (currentFilter === 'active') emptyText = '太棒了！没有待办任务';
+                if (currentFilter === 'completed') emptyText = '还没有完成的任务';
+                
+                listEl.innerHTML = `
+                    <div class="bg-white rounded-lg shadow-lg p-12 text-center">
+                        <div class="text-gray-400 text-lg">${emptyText}</div>
+                    </div>
+                `;
+            } else {
+                listEl.innerHTML = filteredTodos.map(todo => `
+                    <div class="bg-white rounded-lg shadow-lg p-4 flex items-center gap-4 hover:shadow-xl transition-shadow fade-in">
+                        <input
+                            type="checkbox"
+                            ${todo.completed ? 'checked' : ''}
+                            onchange="toggleTodo('${todo.id}')"
+                            class="w-5 h-5 text-blue-500 rounded focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                        />
+                        <div class="flex-1">
+                            <p class="text-lg ${todo.completed ? 'line-through text-gray-400' : 'text-gray-800'}">
+                                ${escapeHtml(todo.title)}
+                            </p>
+                            <p class="text-sm text-gray-500">
+                                ${new Date(todo.createdAt).toLocaleString('zh-CN')}
+                            </p>
+                        </div>
+                        <button
+                            onclick="deleteTodo('${todo.id}')"
+                            class="px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                            删除
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // 更新统计信息
+            const statsEl = document.getElementById('stats');
+            if (todos.length > 0) {
+                statsEl.style.display = 'block';
+                statsEl.textContent = `共 ${todos.length} 个任务，${activeCount} 个进行中`;
+            } else {
+                statsEl.style.display = 'none';
+            }
+        }
+
+        // HTML转义
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 回车键添加任务
+        document.getElementById('newTodo').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addTodo();
+            }
+        });
+
+        // 初始化
+        loadTodos();
+    </script>
+</body>
+</html>
