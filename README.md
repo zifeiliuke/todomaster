@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TodoMaster - 待办事项管理应用
 
-## Getting Started
+一个现代化、简洁高效的待办事项管理应用。
 
-First, run the development server:
+## ✨ 功能特性
 
-```bash
+- ✅ 添加、编辑、删除任务
+- ✅ 标记任务完成/未完成
+- ✅ 任务筛选（全部/进行中/已完成）
+- ✅ 实时统计（总任务/进行中/已完成）
+- ✅ 清除已完成任务
+- ✅ 本地存储（localStorage）
+- ✅ 响应式设计
+- ✅ 现代化UI设计
+
+## 🚀 技术栈
+
+- **框架**: Next.js 16 + React 19
+- **语言**: TypeScript
+- **样式**: Tailwind CSS
+- **图标**: Lucide React
+- **存储**: LocalStorage
+
+## 📦 快速开始
+
+### 安装依赖
+
+\`\`\`bash
+npm install
+\`\`\`
+
+### 开发模式
+
+\`\`\`bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+\`\`\`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+访问 [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 生产构建
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+\`\`\`bash
+npm run build
+npm start
+\`\`\`
 
-## Learn More
+## 🌐 在线访问
 
-To learn more about Next.js, take a look at the following resources:
+**GitHub仓库**: https://github.com/zifeiliuke/todomaster
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**部署到Vercel**:
+1. 访问 [Vercel](https://vercel.com)
+2. 导入GitHub仓库: `zifeiliuke/todomaster`
+3. 点击部署
+4. 等待部署完成
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📸 功能截图
 
-## Deploy on Vercel
+- 添加任务
+- 任务列表
+- 任务筛选
+- 统计信息
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎯 使用说明
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **添加任务**: 在输入框中输入任务内容，点击"添加"或按Enter键
+2. **完成任务**: 点击任务前的圆圈标记完成
+3. **删除任务**: 鼠标悬停在任务上，点击右侧的删除图标
+4. **筛选任务**: 使用顶部的筛选按钮查看不同状态的任务
+5. **清除已完成**: 点击底部的"清除已完成任务"按钮
+
+## 📝 开发团队
+
+本项目由软件开发团队模板创建：
+- 产品经理：需求分析
+- 架构师：技术架构设计
+- 前端开发：UI实现
+- 后端开发：API开发
+- 代码审查员：质量把控
+- 测试工程师：质量保证
+
+## 📄 许可证
+
+MIT License
+
+---
+
+*由小龙虾弯弯 🦐 创建 · 2026*
